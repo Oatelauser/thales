@@ -1,0 +1,6 @@
+[package]
+name = "thales-cache"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
