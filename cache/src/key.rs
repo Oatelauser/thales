@@ -39,6 +39,16 @@ impl<K: Eq> PartialOrd for KeyRef<K> {
     }
 }
 
+impl<K, Q> Borrow<KeyWrapper<Q>> for KeyRef<K>
+where
+    Q: ?Sized,
+    K: Borrow<Q>,
+{
+    fn borrow(&self) -> &KeyWrapper<Q> {
+        KeyWrapper::new(unsafe { (&*self.0).borrow() })
+    }
+}
+
 #[repr(transparent)]
 pub(crate) struct KeyWrapper<Q: ?Sized>(Q);
 
@@ -61,13 +71,3 @@ impl<Q: ?Sized + PartialEq> PartialEq for KeyWrapper<Q> {
 }
 
 impl<Q: ?Sized + Eq> Eq for KeyWrapper<Q> {}
-
-impl<K, Q> Borrow<K> for KeyWrapper<Q>
-where
-    Q: ?Sized,
-    K: Borrow<Q>,
-{
-    fn borrow(&self) -> &K {
-        self.0.borrow()
-    }
-}
